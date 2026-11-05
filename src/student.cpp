@@ -301,6 +301,8 @@ const Node* termahalTerbeli(const Node* root, int uang) {
     }
     const Node* rightResult = termahalTerbeli(root->right, uang);
     return rightResult ? rightResult : root;
+    return nullptr;
+    
 
 }
 
