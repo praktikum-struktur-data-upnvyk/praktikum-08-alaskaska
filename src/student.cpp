@@ -235,28 +235,33 @@ const Node* minimum(const Node* root) {
 
 bool hapus(Node*& root, int nilai) {
     if (root == nullptr)
-    return false;
+        return false;
 
-    if (nilai < root->data) {
+    if (nilai < root->data)
         return hapus(root->left, nilai);
-
-    } else if (nilai > root->data) {
+    if (nilai > root->data)
         return hapus(root->right, nilai);
 
+    
+    if (root->left == nullptr && root->right == nullptr) {
+        delete root;
+        root = nullptr;
+    } else if (root->left == nullptr) {
+        Node* tmp = root;
+        root = root->right;
+        delete tmp;
+    } else if (root->right == nullptr) {
+        Node* tmp = root;
+        root = root->left;
+        delete tmp;
     } else {
-        if (root->left == nullptr && root->right == nullptr) {
-
-        }
-        if (root->left == nullptr) {
-        }
-
-        if (root->right == nullptr) {
-
-        }
+        const Node* s = minimum(root->right);
+        root->data = s->data;
+        hapus(root->right, s->data);
     }
-
     return true;
 }
+
 
 // =============================================================================
 // SOAL 3 — termahalTerbeli                                              25 poin
@@ -296,15 +301,20 @@ bool hapus(Node*& root, int nilai) {
 // =============================================================================
 
 const Node* termahalTerbeli(const Node* root, int uang) {
-    if (root == nullptr || uang < root->data) {
-        return termahalTerbeli(root ? (uang < root->data ? root->left : root->right) : nullptr, uang);
+    const Node* hasil = nullptr;
+    while (root != nullptr) {
+        if (root->data == uang)
+            return root;
+        if (root->data < uang) {
+            hasil = root;        // kandidat, cari yang lebih mahal di kanan
+            root = root->right;
+        } else {
+            root = root->left;   // kemahalan, cari di kiri
+        }
     }
-    const Node* rightResult = termahalTerbeli(root->right, uang);
-    return rightResult ? rightResult : root;
-    return nullptr;
-    
-
+    return hasil;
 }
+    
 
 // =============================================================================
 // MAIN() — program Anda sendiri. TIDAK dinilai, bebas diubah.
